@@ -5,18 +5,20 @@ $conn = require "connection.php";
     $description = trim($_POST['description']);
     $image = $_FILES['image'];
     $prix_estime = trim($_POST['prix_estime']);
+    $prix_final = $_POST['prix_final'];
     $id_metiers = trim($_POST['id_metiers']);
+
 
     //on récupere l'extension original du fichier image.
     $extension = pathinfo($image['name'], PATHINFO_EXTENSION);
     // on creé un nom de un fichier unique
-    $nom_fichier = "photos_creation/" .uniqid() . ".$extension";
+    $nom_fichier = "photos_reparation/" .uniqid() . ".$extension";
 
     // verifier si les champs ne sont pas vide avant l'insertion dans la bdd
     if (!empty($type_bijoux) && !empty($description) && !empty($image['name']) && !empty($prix_estime) && !empty($id_metiers)) {
         // Préparer la requête SQL
-    $sql = "INSERT INTO bijoux (type_bijoux, description, image, prix_estime, id_metiers) 
-            VALUES (:type_bijoux, :description, :image, :prix_estime, :id_metiers)";
+    $sql = "INSERT INTO bijoux (type_bijoux, description, image, prix_estime, prix_final, id_metiers) 
+            VALUES (:type_bijoux, :description, :image, :prix_estime, :prix_final, :id_metiers)";
 
     $stmt = $conn->prepare($sql);
 
@@ -25,6 +27,7 @@ $conn = require "connection.php";
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':image', $nom_fichier);
         $stmt->bindParam(':prix_estime', $prix_estime);
+        $stmt->bindParam(':prix_final', $prix_final);
         $stmt->bindParam(':id_metiers', $id_metiers);
 
 
@@ -44,7 +47,7 @@ $conn = require "connection.php";
             move_uploaded_file($image['tmp_name'], $nom_fichier);
         
         } else {
-            echo "Erreur lors de la création du bijoux.";
+            echo "Erreur lors de la réparation du bijoux.";
         }
     } else {
         echo "Veuillez remplir tous les champs.";
